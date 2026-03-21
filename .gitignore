@@ -1,0 +1,71 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+dist/
+build/
+
+# =========================
+# Virtual Environment
+# =========================
+venv/
+env/
+.venv/
+
+# =========================
+# Jupyter Notebook
+# =========================
+.ipynb_checkpoints/
+
+# =========================
+# Data (IMPORTANT)
+# =========================
+data/raw/
+data/interim/
+data/processed/
+
+# If you want to keep structure but not data:
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+
+# =========================
+# Models
+# =========================
+models/
+*.pkl
+*.joblib
+*.h5
+
+# =========================
+# Logs
+# =========================
+logs/
+*.log
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# VS Code
+# =========================
+.vscode/
+
+# =========================
+# Environment variables
+# =========================
+.env
+
+# =========================
+# Temporary files
+# =========================
+*.tmp
+*.temp
