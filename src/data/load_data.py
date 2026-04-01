@@ -1,33 +1,52 @@
-import pandas as pd
 from pathlib import Path
+import pandas as pd
 
 
-def load_xpt_file(file_path: Path) -> pd.DataFrame:
+def extract_name(file: Path) -> str:
     """
-    Load an XPT file into a pandas DataFrame.
-
-    Parameters:
-    file_path (Path): The path to the XPT file.
-
-    Returns:
-    pd.DataFrame: The loaded data as a DataFrame.
+    Extract dataset name from file name.
+    Handles:
+    P_DEMO.xpt → DEMO
+    DEMO_G.xpt → DEMO
     """
-    return pd.read_sas(file_path, format='xport')
+    parts = file.stem.split("_")
+
+    if parts[0] == "P":
+        return parts[1]
+    return parts[0]
 
 
-def load_year_data(year_path: Path) -> dict:
+def read_xpt(file: Path) -> pd.DataFrame:
     """
-    Load all XPT files for a given year into a dictionary of DataFrames.
-
-    Parameters:
-    year_path (Path): The path to the directory containing the year's XPT files.
-
-    Returns:
-    dict: A dictionary where keys are file names (without extension) and values are DataFrames.
+    Read .xpt file safely.
     """
+    return pd.read_sas(file, format="xport", encoding="latin1")
+
+
+def load_all_data(base_path: Path) -> dict:
     data = {}
-    for file in year_path.glob('*.xpt'):
-        name = file.stem.split('_')[0]  # DEMO, CBC, etc.
-        data[name] = load_xpt_file(file)
+
+    for year_folder in base_path.iterdir():
+        if not year_folder.is_dir():
+            continue
+
+        year = year_folder.name
+
+        for file in year_folder.glob('*.xpt'):
+            dataset_name = extract_name(file)
+
+            try:
+                df = read_xpt(file)
+
+                if 'year' not in df.columns:
+                    df["year"] = year
+
+                # flat dictionary using tuple key
+                key = (year, dataset_name)
+                data[key] = df
+
+            except Exception as e:
+                print(f'Error reading {file}: {e}')
+                continue
 
     return data
