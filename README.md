@@ -1,189 +1,124 @@
-# 🧬 Biological Age Prediction using NHANES Data
+# Biological Age Prediction using NHANES Data
 
-## 📌 Overview
+## Overview
 
-This project focuses on predicting **biological age** using clinical and biochemical data from the NHANES dataset.
+This project aims to predict **biological age** using clinical biomarkers from the NHANES dataset.
 
-The long-term goal is to build a system that enables:
-
-- Understanding how biological signals relate to aging
-- Running experiments on biomarkers (e.g., inflammation)
-- Exploring interventions that may influence aging trajectories
-
-This project is designed as a **research-oriented ML pipeline**, not just a model.
+Unlike chronological age, biological age reflects the physiological condition of an individual. This project explores whether **inflammation markers (CRP)** improve the accuracy of biological age prediction models.
 
 ---
 
-## 🎯 Objectives
+## Problem Statement
 
-- Build a scalable ML pipeline for biological age prediction
-- Compare models **with vs without inflammation markers (CRP)**
-- Identify key biological features influencing aging
-- Enable future experimentation in **epigenetics and longevity research**
+Chronological age alone is not a reliable indicator of health and aging.
 
----
+This project investigates:
 
-## 🧠 Key Idea
-
-We construct **two dataset variants**:
-
-| Model              | Data Used              | Features               |
-| ------------------ | ---------------------- | ---------------------- |
-| Base Model         | All years              | No inflammation marker |
-| Inflammation Model | Subset (CRP available) | Includes CRP           |
-
-This allows us to answer:
-
-> Does inflammation significantly improve biological age prediction?
+* Can machine learning models estimate biological age from biomarkers?
+* Does including inflammation (CRP) improve prediction performance?
 
 ---
 
-## 🏗️ Project Structure
+## Key Idea
+
+Two datasets are created to enable a controlled comparison:
+
+* **Dataset A (No CRP):**
+
+  * Uses all available years
+  * Excludes inflammation marker
+* **Dataset B (With CRP):**
+
+  * Uses only rows where CRP is available
+  * Includes inflammation marker
+
+This allows a **research-style comparison** of model performance.
+
+---
+
+## Pipeline
 
 ```
-.
-├── src/
-│   ├── data/              # Data loading & dataset creation
-│   ├── preprocessing/     # Cleaning & transformations
-│   ├── features/          # Feature engineering
-│   ├── models/            # Model training
-│   ├── evaluation/        # Metrics & validation
-│   ├── interpret/         # SHAP analysis
-│   └── utils/
-│
-├── data/
-│   ├── raw/               # Original NHANES data
-│   └── processed/         # Clean datasets
-│
-├── models/                # Saved trained models
-├── outputs/               # Plots, metrics, reports
-├── notebooks/             # Exploratory analysis
-├── tests/                 # Unit tests
-│
-├── config.yaml
-├── main.py
-├── Dockerfile
-├── requirements.txt
-└── README.md
+Raw NHANES Data (.xpt)
+→ Data Loading (SAS parsing)
+→ Merge Across Years
+→ Feature Engineering
+→ Dataset Creation (CRP vs No CRP)
+→ Model Training
+→ Evaluation
+→ SHAP Interpretation
 ```
 
 ---
 
-## ⚙️ Pipeline
+## Project Structure
 
 ```
-load_data → merge_data → combine_years → create_datasets → preprocess → train → evaluate → interpret
-```
+src/
+  data/           # data loading & merging
+  preprocessing/  # cleaning & transformations
+  features/       # feature engineering
+  models/         # training logic
+  evaluation/     # metrics
+  interpret/      # SHAP analysis
+  utils/          # helper functions
 
----
-
-## 📊 Features Used
-
-- Demographics (age, gender, etc.)
-- Blood biomarkers
-- Clinical measurements
-- Inflammation marker (CRP) _(in selected model)_
-
----
-
-## 🤖 Models
-
-- Random Forest
-- XGBoost
-- Stacking / Ensemble models
-
----
-
-## 📈 Evaluation Metrics
-
-- Mean Absolute Error (MAE)
-- R² Score
-
-Outputs are stored in:
-
-```
-outputs/
-├── metrics.json
-├── feature_importance.png
-└── shap_summary.png
+notebooks/        # experimentation
+data/             # raw & processed (ignored in git)
+outputs/          # plots & results
+tests/            # unit tests
 ```
 
 ---
 
-## 🔍 Interpretability
+## Current Status
 
-We use **SHAP (SHapley Additive Explanations)** to:
-
-- Identify key aging biomarkers
-- Understand model behavior
-- Support biological insights
-
----
-
-## 🧪 Research Direction
-
-This project is being developed as a foundation for:
-
-- Epigenetic aging models
-- Biomarker-based interventions
-- Longevity research
-
-Future work includes:
-
-- DNA methylation data integration
-- Time-series biomarker tracking
-- Intervention simulation
+* [x] Data loading pipeline (XPT files)
+* [x] Multi-year dataset merging
+* [x] Modular project structure (src-based)
+* [x] Dataset design (CRP vs No CRP)
+* [ ] Feature engineering (in progress)
+* [ ] Model training
+* [ ] Evaluation & comparison
+* [ ] SHAP interpretability
 
 ---
 
-## 🚀 How to Run
+## Tech Stack
 
-### 1. Install dependencies
+* Python
+* Pandas / NumPy
+* Scikit-learn
+* XGBoost (planned)
+* SHAP (planned)
 
-```
+---
+
+## Reproducibility
+
+```bash
+git clone https://github.com/AnujCh07ML/biological-age-prediction.git
+cd biological-age-prediction
+
+python -m venv .venv
+source .venv/bin/activate
+
 pip install -r requirements.txt
-```
-
-### 2. Run pipeline
-
-```
-python main.py
+pip install -e .
 ```
 
 ---
 
-## 🐳 Docker Support
+## Future Work
 
-```
-docker build -t biological-age .
-docker run biological-age
-```
-
----
-
-## 📌 Why This Project Matters
-
-Most ML projects focus only on prediction.
-
-This project focuses on:
-
-- **Scientific understanding**
-- **Reproducible pipelines**
-- **Real-world biological impact**
+* Implement biological age proxy
+* Compare models with and without CRP
+* Add SHAP-based feature interpretation
+* Optimize model performance
+* API deployment
 
 ---
 
-## 👤 Author
+## License
 
-ANuj
-
-- Machine Learning & Bioinformatics
-- Focus: Aging, Epigenetics, Longevity
-
----
-
-## 🌍 Goal
-
-To contribute to research enabling:
-
-> Radical life extension and deeper understanding of human biology.
+This project is licensed under the MIT License.
