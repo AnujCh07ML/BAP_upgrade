@@ -1,57 +1,29 @@
-# 🧬 Biological Age Prediction using NHANES Data
+# 🧬 Biological Age Prediction (NHANES-Based)
 
-## Overview
-
-This project aims to predict **biological age** using clinical biomarkers from the NHANES dataset.
-
-Unlike chronological age, biological age reflects the physiological condition of an individual. This project explores whether **inflammation markers (CRP)** improve the accuracy of biological age prediction models.
+A scalable machine learning pipeline to estimate **biological age** using multi-year NHANES health data.
 
 ---
 
-## Problem Statement
+## 🚀 Project Overview
 
-Chronological age alone is not a reliable indicator of health and aging.
+This project focuses on modeling biological aging using clinical and biomarker data by:
 
-This project investigates:
-
-* Can machine learning models estimate biological age from biomarkers?
-* Does including inflammation (CRP) improve prediction performance?
-
----
-
-## Key Idea
-
-Two datasets are created to enable a controlled comparison:
-
-* **Dataset A (No CRP):**
-
-  * Uses all available years
-  * Excludes inflammation marker
-* **Dataset B (With CRP):**
-
-  * Uses only rows where CRP is available
-  * Includes inflammation marker
-
-This allows a **research-style comparison** of model performance.
+- Integrating multiple NHANES cycles (2011–2020)
+- Handling inconsistent feature availability across years
+- Building a clean, modular, and reproducible ML pipeline
 
 ---
 
-## Pipeline
+## 🧠 Key Focus
 
-```
-Raw NHANES Data (.xpt)
-→ Data Loading (SAS parsing)
-→ Merge Across Years
-→ Feature Engineering
-→ Dataset Creation (CRP vs No CRP)
-→ Model Training
-→ Evaluation
-→ SHAP Interpretation
-```
+- End-to-end ML pipeline design
+- Robust multi-table merging using **SEQN (unique identifier)**
+- Feature engineering from heterogeneous biomedical data
+- Model evaluation and interpretability using SHAP
 
 ---
 
-## Project Structure
+## 🏗️ Project Structure
 
 ```
 src/
@@ -59,42 +31,87 @@ src/
   preprocessing/  # cleaning & transformations
   features/       # feature engineering
   models/         # training logic
-  evaluation/     # metrics
+  evaluation/     # metrics & validation
   interpret/      # SHAP analysis
   utils/          # helper functions
 
-notebooks/        # experimentation
-data/             # raw & processed (ignored in git)
-outputs/          # plots & results
+notebooks/        # experiments & exploration
+data/             # raw & processed (git-ignored)
+outputs/          # metrics, plots, model outputs
 tests/            # unit tests
 ```
 
 ---
 
-## Current Status
+## 🔄 Pipeline
 
-* [x] Data loading pipeline (XPT files)
-* [x] Multi-year dataset merging
-* [x] Modular project structure (src-based)
-* [x] Dataset design (CRP vs No CRP)
-* [ ] Feature engineering (in progress)
-* [ ] Model training
-* [ ] Evaluation & comparison
-* [ ] SHAP interpretability
-
----
-
-## Tech Stack
-
-* Python
-* Pandas / NumPy
-* Scikit-learn
-* XGBoost (planned)
-* SHAP (planned)
+```
+load_data
+  → merge_data
+  → combine_years
+  → create_datasets
+  → preprocess
+  → train
+  → evaluate
+  → interpret
+```
 
 ---
 
-## Reproducibility
+## 🧪 Experimental Extensions
+
+Some biomarkers are not consistently available across all NHANES cycles.
+
+To handle this, the pipeline supports **modular dataset configurations**:
+
+- Optional inclusion of specific biomarkers (e.g., inflammation markers)
+- Subset-based modeling without breaking the core pipeline
+
+This enables **controlled experiments while preserving data integrity**.
+
+---
+
+## 📊 Outputs
+
+- Model performance metrics (MAE, R²)
+- Feature importance visualizations
+- SHAP summary plots for interpretability
+
+---
+
+## ⚠️ Design Principles
+
+- Single unified pipeline (no duplication)
+- Dataset variations handled via configuration
+- No biologically invalid imputations
+- Reproducibility via Docker and environment setup
+
+---
+
+## 📌 Current Status
+
+- [x] Data loading pipeline (NHANES XPT files)
+- [x] Multi-year dataset merging
+- [x] Modular project structure (`src/` based)
+- [x] Dataset design (multi-configuration support)
+- [ ] Feature engineering (in progress)
+- [ ] Model training
+- [ ] Evaluation & comparison
+- [ ] SHAP interpretability
+
+---
+
+## 🧰 Tech Stack
+
+- Python
+- Pandas, NumPy
+- Scikit-learn
+- XGBoost _(planned)_
+- SHAP _(planned)_
+
+---
+
+## 🔁 Reproducibility
 
 ```bash
 git clone https://github.com/AnujCh07ML/biological-age-prediction.git
@@ -109,16 +126,26 @@ pip install -e .
 
 ---
 
-## Future Work
+## 🔭 Future Work
 
-* Implement biological age proxy
-* Compare models with and without CRP
-* Add SHAP-based feature interpretation
-* Optimize model performance
-* API deployment
+- Define and validate biological age proxy
+- Compare feature subsets (e.g., with vs without specific biomarkers)
+- Add SHAP-based interpretation
+- Optimize model performance
+- API deployment for inference
 
 ---
 
-## License
+## 🧠 Author Note
+
+This project is designed as a **research-oriented ML system**, emphasizing:
+
+- clean architecture
+- biological validity
+- extensibility for experimentation
+
+---
+
+## 📄 License
 
 This project is licensed under the MIT License.
