@@ -1,42 +1,92 @@
 from pathlib import Path
+from typing import Dict, Any
 import pandas as pd
 
-from src.data.load_data import load_year_data
-from src.data.merge_data import merge_year_data
+from data.load_data import load_all_data
+from data.merge_data import merge_all_years, combine_years
 
 
-RAW_DIR = Path('data/raw')
-INTERIM_DIR = Path('data/interim')
+def build_interim_dataset(raw_dir: Path) -> pd.DataFrame:
+    """
+    Build full NHANES dataset from raw data.
 
+    Pipeline:
+    RAW → load_all_data → merge_all_years → combine_years
 
-def process_all_years():
-    all_years = []
+    Parameters
+    ----------
+    raw_dir : Path
+        Path to raw data directory
 
-    for year_path in RAW_DIR.iterdir():
-        if year_path.is_dir():
-            print(f"Processing {year_path.name}")
+    Returns
+    -------
+    pd.DataFrame
+        Fully merged dataset across all years
+    """
 
-            data_dict = load_year_data(year_path)
-            merged_df = merge_year_data(data_dict)
+    if not raw_dir.exists():
+        raise FileNotFoundError(f"Raw directory not found: {raw_dir}")
 
-            merged_df['year'] = year_path.name
+    print("[INFO] Loading raw data...")
+    data = load_all_data(raw_dir)
 
-            all_years.append(merged_df)
+    if not data:
+        raise ValueError("No data loaded from raw directory.")
 
-    final_df = pd.concat(all_years, axis=0)
+    print(f"[INFO] Loaded datasets: {len(data)} tables")
+
+    print("[INFO] Merging features within each year...")
+    merged_data = merge_all_years(data)
+
+    print(f"[INFO] Years processed: {list(merged_data.keys())}")
+
+    print("[INFO] Combining all years...")
+    final_df = combine_years(merged_data)
+
+    print(f"[INFO] Final dataset shape: {final_df.shape}")
 
     return final_df
 
 
-def save_interim(df: pd.DataFrame):
-    INTERIM_DIR.mkdir(parents=True, exist_ok=True)
+def save_interim(df: pd.DataFrame, output_path: Path) -> None:
+    """
+    Save dataset to parquet format.
 
-    output_path = INTERIM_DIR / "nhanes_merged.parquet"
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Data to save
+    output_path : Path
+        Output file path
+    """
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
     df.to_parquet(output_path, index=False)
 
-    print(f"Saved to {output_path}")
+    print(f"[INFO] Saved interim dataset to: {output_path}")
 
 
-if __name__ == "__main__":
-    df = process_all_years()
-    save_interim(df)
+def run_make_interim(config: Dict[str, Any]) -> None:
+    """
+    Run full interim data pipeline.
+
+    Parameters
+    ----------
+    config : dict
+        Loaded config.yaml dictionary
+    """
+
+    try:
+        raw_dir = Path(config["paths"]["raw"])
+        output_path = Path(config["paths"]["interim"])
+    except KeyError as e:
+        raise KeyError(f"Missing config key: {e}")
+
+    print("[INFO] Starting interim pipeline...")
+
+    df = build_interim_dataset(raw_dir)
+
+    save_interim(df, output_path)
+
+    print("[INFO] Interim pipeline completed successfully.")
