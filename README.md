@@ -23,23 +23,80 @@ This project focuses on modeling biological aging using clinical and biomarker d
 
 ---
 
-## 🏗️ Project Structure
+## 🏗️ Project Architecture
+
+This project follows a **production-style Python package structure** to ensure consistency, reproducibility, and clean separation of concerns.
+
+### 📦 Package Layout
+
+The core codebase is organized under a `src/` directory with a dedicated package:
 
 ```
 src/
-  data/           # data loading & merging
-  preprocessing/  # cleaning & transformations
-  features/       # feature engineering
-  models/         # training logic
-  evaluation/     # metrics & validation
-  interpret/      # SHAP analysis
-  utils/          # helper functions
-
-notebooks/        # experiments & exploration
-data/             # raw & processed (git-ignored)
-outputs/          # metrics, plots, model outputs
-tests/            # unit tests
+└── biological_age/
+    ├── data/
+    ├── preprocessing/
+    ├── features/
+    ├── models/
+    ├── evaluation/
+    ├── interpret/
+    ├── split/
+    └── utils/
 ```
+
+### 🔑 Key Design Decisions
+
+#### 1. `src/`-based structure
+
+All source code is placed under `src/` to avoid import conflicts and ensure that only explicitly installed packages are used.
+
+#### 2. Dedicated package namespace (`biological_age`)
+
+Instead of importing from ambiguous paths like `src.data`, the project exposes a clear package:
+
+```python
+from biological_age.data.load_data import load_all_data
+```
+
+This makes the code:
+
+- more readable
+- easier to reuse
+- consistent across environments
+
+#### 3. Installable project (`pip install -e .`)
+
+The project is configured as an installable package using `setup.py`, enabling:
+
+- consistent imports across Jupyter, scripts, and tests
+- no need for `sys.path` hacks
+- environment-independent execution
+
+#### 4. Separation of concerns
+
+Each module has a clear responsibility:
+
+| Module           | Responsibility                       |
+| ---------------- | ------------------------------------ |
+| `data/`          | Data loading and dataset creation    |
+| `preprocessing/` | Cleaning and transformation          |
+| `features/`      | Feature engineering                  |
+| `models/`        | Training and model definitions       |
+| `evaluation/`    | Metrics and validation               |
+| `interpret/`     | Model explainability (e.g., SHAP)    |
+| `split/`         | Train-test splitting                 |
+| `utils/`         | Shared utilities and config handling |
+
+### 🚀 Why this matters
+
+This structure ensures:
+
+- reproducibility across environments (Jupyter, CLI, CI)
+- scalability for adding new models or datasets
+- clean integration with testing and deployment pipelines
+- alignment with industry-standard ML project design
+
+In short, the project is structured not just as a collection of scripts, but as a **maintainable and extensible ML system**.
 
 ---
 
