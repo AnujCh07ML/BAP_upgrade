@@ -2,8 +2,8 @@ from pathlib import Path
 from typing import Dict, Any
 import pandas as pd
 
-from data.load_data import load_all_data
-from data.merge_data import merge_all_years, combine_years
+from biological_age.data.load_data import load_all_data
+from biological_age.data.merge_data import merge_all_years, combine_years
 
 
 def build_interim_dataset(raw_dir: Path) -> pd.DataFrame:
