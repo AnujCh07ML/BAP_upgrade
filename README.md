@@ -23,6 +23,35 @@ This project focuses on modeling biological aging using clinical and biomarker d
 
 ---
 
+## 📁 Project Structure
+
+```text
+biological-age-prediction/
+├── data/                # Raw, interim, and processed datasets
+│   ├── raw/
+│   ├── interim/
+│   └── processed/
+├── notebooks/           # Exploratory and debug notebooks
+├── outputs/             # Metrics, plots, and reports
+├── src/
+│   └── biological_age/  # Core package
+│       ├── data/            # Data loading & dataset creation
+│       ├── preprocessing/   # Cleaning & transformations
+│       ├── features/        # Feature engineering
+│       ├── models/          # Training & stacking
+│       ├── evaluation/      # Metrics & validation
+│       ├── interpret/       # Explainability (SHAP)
+│       ├── split/           # Train-test splitting
+│       └── utils/           # Config & helper utilities
+├── tests/               # Unit tests
+├── main.py              # Pipeline entry point
+├── config.yaml          # Configuration file
+├── setup.py             # Package configuration
+└── README.md
+```
+
+---
+
 ## 🏗️ Project Architecture
 
 This project follows a **production-style Python package structure** to ensure consistency, reproducibility, and clean separation of concerns.
