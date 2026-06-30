@@ -1,6 +1,11 @@
 from pathlib import Path
 import pandas as pd
 
+from biological_age.utils.config import (
+    PROJECT_ROOT,
+    load_config,
+)
+
 
 def clean_invalid_numeric_values(
     df: pd.DataFrame,
@@ -87,3 +92,27 @@ def load_all_data(base_path: Path, threshold: float,) -> dict:
                 continue
 
     return data
+
+
+...
+
+
+def load_processed_dataset() -> pd.DataFrame:
+    """
+    Load the processed dataset defined in config.yaml.
+
+    Returns
+    -------
+    pd.DataFrame
+        Loaded processed dataset.
+    """
+    config = load_config()
+
+    dataset_path = PROJECT_ROOT / config["paths"]["processed"]
+
+    if not dataset_path.exists():
+        raise FileNotFoundError(
+            f"Processed dataset not found: {dataset_path}"
+        )
+
+    return pd.read_parquet(dataset_path)
