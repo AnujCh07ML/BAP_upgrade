@@ -8,3 +8,4 @@ jupyterlab
 notebook
 pyyaml
 pytest
+shap
