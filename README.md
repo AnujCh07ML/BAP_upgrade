@@ -1,38 +1,29 @@
-# 🧬 Biological Age Prediction Using NHANES Biomarkers
+# 🧬 Biological Age Prediction using NHANES Biomarkers
 
-A research-oriented machine learning project for estimating chronological age from clinical and laboratory biomarkers using multi-cycle NHANES (National Health and Nutrition Examination Survey) data.
+> An end-to-end machine learning project for predicting chronological age from clinical laboratory biomarkers using the National Health and Nutrition Examination Survey (NHANES).
 
-The project emphasizes reproducible machine learning pipelines, biological validity, model comparison, and explainability.
+This project demonstrates a production-style machine learning workflow, including:
 
----
-
-# 🚀 Project Overview
-
-Aging is associated with measurable physiological changes across multiple biological systems.
-
-This project investigates whether routinely collected blood biomarkers can be used to estimate age and serve as a foundation for future biological age modeling.
-
-The system:
-
-- Integrates multiple NHANES cycles (2011–2020)
-- Cleans and harmonizes heterogeneous biomedical datasets
-- Builds a reproducible machine learning pipeline
-- Benchmarks multiple tree-based models
-- Supports future explainability using SHAP
+- Data engineering
+- Feature engineering
+- Hyperparameter optimization
+- Explainable AI (SHAP)
+- Modular project architecture
+- Model versioning
 
 ---
 
-# 🎯 Objectives
+# Project Overview
 
-- Build a production-style ML pipeline
-- Create a unified NHANES biomarker dataset
-- Compare multiple machine learning algorithms
-- Identify biomarkers most associated with aging
-- Develop a foundation for biological age estimation research
+Aging is accompanied by measurable physiological changes across multiple biological systems.
+
+This project investigates whether routinely collected blood biomarkers can accurately predict chronological age and provide a foundation for future biological age estimation.
+
+Unlike a notebook-only implementation, this project is organized as a reusable machine learning pipeline with separate modules for data processing, preprocessing, feature engineering, model training, evaluation, and explainability.
 
 ---
 
-# 📊 Dataset
+# Dataset
 
 ### Source
 
@@ -44,93 +35,165 @@ National Health and Nutrition Examination Survey (NHANES)
 
 ### Final Dataset
 
-| Metric       | Value       |
-| ------------ | ----------- |
-| Participants | 36,992      |
-| Features     | 27          |
-| Target       | Age (years) |
-
-### Current Biomarkers
-
-- Albumin
-- Blood Urea Nitrogen
-- Creatinine
-- Uric Acid
-- HbA1c
-- Total Cholesterol
-- HDL Cholesterol
-- Triglycerides
-- White Blood Cell Count
-- Lymphocyte Percentage
-- Monocyte Percentage
-- Neutrophil Percentage
-- Red Blood Cell Count
-- Hemoglobin
-- Hematocrit
-- Mean Corpuscular Volume
-- Red Cell Distribution Width
-- Platelet Count
-- Calcium
-- Sodium
-- Potassium
-- Phosphorus
-- Total Bilirubin
-- Total Protein
-- Globulin
-- GGT
-- Sex
+| Metric              |             Value |
+| ------------------- | ----------------: |
+| Participants        |            36,992 |
+| Original Features   |                27 |
+| Engineered Features |                31 |
+| Target              | Chronological Age |
 
 ---
 
-# 🏗️ Project Architecture
+# Machine Learning Pipeline
 
 ```text
-load_data
-    ↓
-merge_data
-    ↓
-combine_years
-    ↓
-create_dataset
-    ↓
-train_test_split
-    ↓
-preprocessing
-    ↓
-model_training
-    ↓
-evaluation
-    ↓
-artifact_persistence
-    ↓
-interpretability
+Raw NHANES Data
+        │
+        ▼
+Load & Merge Data
+        │
+        ▼
+Dataset Creation
+        │
+        ▼
+Feature Engineering
+        │
+        ▼
+Feature Selection
+        │
+        ▼
+Train/Test Split
+        │
+        ▼
+Preprocessing Pipeline
+        │
+        ▼
+Hyperparameter Tuning
+        │
+        ▼
+Model Evaluation
+        │
+        ▼
+SHAP Interpretation
 ```
 
 ---
 
-# 📁 Project Structure
+# Feature Engineering
+
+Three biologically motivated biomarkers were engineered:
+
+| Engineered Feature       | Formula                          |
+| ------------------------ | -------------------------------- |
+| BUN / Creatinine Ratio   | Blood Urea Nitrogen ÷ Creatinine |
+| Cholesterol / HDL Ratio  | Total Cholesterol ÷ HDL          |
+| Triglyceride / HDL Ratio | Triglycerides ÷ HDL              |
+
+These clinically meaningful ratio features improved predictive performance compared to the tuned baseline model.
+
+---
+
+# Models Evaluated
+
+- Random Forest Regressor
+- XGBoost Regressor
+- LightGBM Regressor
+
+Hyperparameter optimization was performed using **RandomizedSearchCV**.
+
+---
+
+# Model Performance
+
+| Model                              |      MAE |      RMSE |        R² |
+| ---------------------------------- | -------: | --------: | --------: |
+| Random Forest                      |     8.05 |     11.30 |     0.777 |
+| Tuned XGBoost (V1)                 |     7.71 |     10.75 |     0.798 |
+| Tuned LightGBM                     |     7.71 |     10.73 |     0.799 |
+| ⭐ Feature Engineered XGBoost (V2) | **7.56** | **10.67** | **0.801** |
+
+---
+
+# Feature Engineering Impact
+
+| Metric | Before |     After |
+| ------ | -----: | --------: |
+| MAE    |   7.71 |  **7.56** |
+| RMSE   |  10.75 | **10.67** |
+| R²     |  0.798 | **0.801** |
+
+Feature engineering consistently improved model performance across all evaluation metrics.
+
+---
+
+# SHAP Explainability
+
+Global and local model interpretation was performed using SHAP.
+
+## Global Feature Importance
+
+![SHAP Feature Importance](outputs/plots/shap_bar_v2.png)
+
+---
+
+## SHAP Beeswarm
+
+![SHAP Beeswarm](outputs/plots/shap_beeswarm_v2.png)
+
+---
+
+## Feature Dependence
+
+### HbA1c
+
+![HbA1c Dependence](outputs/plots/numeric__hba1c_percent_dependence_v2.png)
+
+### Mean Corpuscular Volume
+
+![MCV Dependence](outputs/plots/numeric__mean_corpuscular_volume_dependence_v2.png)
+
+---
+
+# Key SHAP Findings
+
+The SHAP analysis identified several important biological patterns:
+
+- HbA1c was the strongest predictor of age.
+- Mean Corpuscular Volume showed a pronounced nonlinear relationship with aging.
+- Total Cholesterol and Blood Urea Nitrogen were among the most influential biomarkers.
+- Phosphorus demonstrated an inverse relationship with predicted age.
+- Tree-based boosting successfully captured complex nonlinear interactions that traditional linear models would likely miss.
+
+---
+
+# Repository Structure
 
 ```text
 biological-age-prediction/
+
 ├── data/
 │   ├── raw/
 │   ├── interim/
 │   └── processed/
 │
 ├── models/
+│   ├── tuned/
+│   ├── feature_engineered/
+│   └── final/
+│
+├── notebooks/
 │
 ├── outputs/
 │   ├── metrics/
 │   ├── plots/
-│   └── reports/
-│
-├── notebooks/
+│   ├── reports/
+│   └── tuning/
 │
 ├── src/
 │   └── biological_age/
 │       ├── data/
-│       ├── preprocessing/
 │       ├── features/
+│       ├── preprocessing/
 │       ├── models/
 │       ├── evaluation/
 │       ├── interpret/
@@ -138,125 +201,15 @@ biological-age-prediction/
 │       └── utils/
 │
 ├── tests/
-├── main.py
+├── Dockerfile
 ├── config.yaml
+├── main.py
 └── README.md
 ```
 
 ---
 
-# ⚙️ Machine Learning Pipeline
-
-### Preprocessing
-
-Numeric features:
-
-- Median imputation
-- Standard scaling
-
-Categorical features:
-
-- Most frequent imputation
-
-### Train/Test Split
-
-- Random state: 42
-- Reproducible splits
-
-### Models Evaluated
-
-- Random Forest Regressor
-- XGBoost Regressor
-- LightGBM Regressor
-
----
-
-# 🏆 Current Benchmark Results
-
-| Model         | MAE  | RMSE  | R²    |
-| ------------- | ---- | ----- | ----- |
-| Random Forest | 8.05 | 11.30 | 0.777 |
-| XGBoost       | 7.71 | 10.75 | 0.798 |
-| LightGBM      | 7.71 | 10.73 | 0.799 |
-
-### Current Best Model
-
-LightGBM currently provides the strongest overall benchmark performance.
-
-```text
-MAE  : 7.71 years
-RMSE : 10.73
-R²   : 0.799
-```
-
----
-
-# 💾 Saved Artifacts
-
-### Models
-
-```text
-models/
-├── rf_model.pkl
-├── xgb_model.pkl
-└── lgbm_model.pkl
-```
-
-### Metrics
-
-```text
-outputs/metrics/
-├── rf_metrics.json
-├── xgb_metrics.json
-├── lgbm_metrics.json
-└── model_comparison.json
-```
-
----
-
-# 📈 Current Findings
-
-- Tree-based gradient boosting methods outperform Random Forest.
-- XGBoost and LightGBM perform similarly.
-- Biomarker-based age prediction is feasible using standard laboratory measurements.
-- Current performance suggests meaningful age-related biological signal exists within the selected feature set.
-
----
-
-# 📌 Current Status
-
-## Data Engineering
-
-- [x] NHANES ingestion pipeline
-- [x] Multi-year merging
-- [x] Dataset validation
-- [x] Processed dataset generation
-
-## Machine Learning
-
-- [x] Feature preprocessing pipeline
-- [x] Random Forest benchmark
-- [x] XGBoost benchmark
-- [x] LightGBM benchmark
-- [x] Model comparison framework
-- [x] Model artifact persistence
-
-## In Progress
-
-- [ ] Hyperparameter optimization
-- [ ] Feature importance analysis
-- [ ] SHAP explainability
-- [ ] Final model selection
-
-## Planned
-
-- [ ] Extended biomarker experiments
-- [ ] Biological age proxy validation
-- [ ] API deployment
-
----
-
-# 🧰 Tech Stack
+# Technologies
 
 ### Data
 
@@ -271,33 +224,50 @@ outputs/metrics/
 
 ### Explainability
 
-- SHAP (planned)
+- SHAP
 
 ### Engineering
 
 - Pytest
 - Docker
 - Git
+- GitHub Actions
 
 ---
 
-# 🔁 Reproducibility
+# Reproducibility
+
+Clone the repository
 
 ```bash
 git clone https://github.com/AnujCh07ML/biological-age-prediction.git
+```
 
-cd biological-age-prediction
+Create a virtual environment
 
+```bash
 python -m venv .venv
+```
 
+Activate
+
+```bash
 source .venv/bin/activate
+```
 
+Install
+
+```bash
 pip install -r requirements.txt
+```
 
+Install package
+
+```bash
 pip install -e .
 ```
 
-Run pipeline:
+Run pipeline
 
 ```bash
 python main.py
@@ -305,32 +275,42 @@ python main.py
 
 ---
 
-# 🔭 Future Work
+# Current Project Status
 
-- Hyperparameter tuning
-- Feature importance analysis
-- SHAP interpretation
-- Additional biomarker experiments
-- Biological age validation
-- FastAPI deployment
-- Dockerized inference service
+## Completed
 
----
-
-# 🧠 Author Note
-
-This project is intentionally structured as a maintainable machine learning system rather than a collection of notebooks.
-
-The focus is on:
-
-- Reproducibility
-- Biological validity
-- Modular architecture
-- Explainable machine learning
-- Research-oriented experimentation
+- NHANES data ingestion
+- Multi-cycle data harmonization
+- Feature preprocessing
+- Baseline model development
+- Hyperparameter optimization
+- SHAP explainability
+- Biological feature engineering
+- Versioned model artifacts
 
 ---
 
-# 📄 License
+# Next Steps
+
+- FastAPI model serving
+- Docker deployment
+- GitHub Actions CI/CD
+- Model monitoring
+- Biological age proxy development
+- External dataset validation
+
+---
+
+# Author
+
+**Anuj Chauhan**
+
+Machine Learning | Bioinformatics | Explainable AI
+
+Interested in machine learning applications for aging research, computational biology, and biomedical data science.
+
+---
+
+# License
 
 MIT License
