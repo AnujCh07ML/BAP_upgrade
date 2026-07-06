@@ -1,0 +1,8 @@
+{
+    "model": "xgboost",
+    "version": "v2",
+    "feature_set": "feature_engineered_v1",
+    "mae": 7.562688861703338,
+    "rmse": 10.668864336358236,
+    "r2": 0.8012450573180926
+}

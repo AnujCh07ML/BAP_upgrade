@@ -1,10 +1,16 @@
 # =====================================
+# Target Variable
+# =====================================
+
+TARGET_COLUMN = "age_years"
+
+
+# =====================================
 # Demographic Features
 # =====================================
 
 DEMOGRAPHIC_FEATURES = [
     "sex",
-    "age_years",
 ]
 
 
@@ -75,11 +81,46 @@ LIVER_FEATURES = [
 
 
 # =====================================
-# Final Feature List
+# Engineered Features
+# =====================================
+
+ENGINEERED_FEATURES = [
+    "bun_creatinine_ratio",
+    "albumin_globulin_ratio",
+    "cholesterol_hdl_ratio",
+    "triglyceride_hdl_ratio",
+]
+
+
+# =====================================
+# Numeric Features
+# =====================================
+
+NUMERIC_FEATURES = (
+    METABOLIC_FEATURES
+    + LIPID_FEATURES
+    + CBC_FEATURES
+    + ELECTROLYTE_FEATURES
+    + LIVER_FEATURES
+    + ENGINEERED_FEATURES
+)
+
+
+# =====================================
+# Categorical Features
+# =====================================
+
+CATEGORICAL_FEATURES = DEMOGRAPHIC_FEATURES
+
+
+# =====================================
+# Raw Dataset Columns
+# (Expected before feature engineering)
 # =====================================
 
 KEEP_COLUMNS = (
     DEMOGRAPHIC_FEATURES
+    + [TARGET_COLUMN]
     + METABOLIC_FEATURES
     + LIPID_FEATURES
     + CBC_FEATURES
@@ -88,9 +129,30 @@ KEEP_COLUMNS = (
 )
 
 
+# =====================================
+# Final Modeling Features
+# (Expected after feature engineering)
+# =====================================
+
+FEATURE_COLUMNS = (
+    NUMERIC_FEATURES
+    + CATEGORICAL_FEATURES
+)
+
+
 def select_features(df):
     """
-    Select curated modeling features.
+    Select curated modeling features from the processed dataset.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Processed dataset.
+
+    Returns
+    -------
+    pd.DataFrame
+        Dataset containing the selected modeling features.
     """
 
     missing_features = [
@@ -104,4 +166,3 @@ def select_features(df):
         )
 
     return df[KEEP_COLUMNS]
-
