@@ -1,4 +1,4 @@
-from sklearn.ensemble import RandomForestRegressor
+DEBUG = False
 
 
 def train_model(
@@ -9,10 +9,13 @@ def train_model(
     y_train,
 ):
     """
-    Train baseline Random Forest model.
+    Train a machine learning model using the provided estimator.
 
     Parameters
     ----------
+    estimator : sklearn estimator
+        Machine learning model to train.
+
     preprocessor : ColumnTransformer
         Preprocessing pipeline.
 
@@ -25,37 +28,23 @@ def train_model(
     y_train : pd.Series
         Training target.
 
-    random_state : int, default=42
-        Random seed for reproducibility.
-
     Returns
     -------
     tuple
         (
-            model,
+            trained_model,
             fitted_preprocessor,
-            X_train_processed,
-            X_test_processed,
             y_pred,
         )
     """
 
-    # -----------------------------
-    # Fit preprocessor on train only
-    # -----------------------------
-
-    print("\n=== RAW FEATURES ===")
-    print(f"Number of raw features: {len(X_train.columns)}")
-
-    for col in X_train.columns:
-        print(col)
+    # -----------------------------------
+    # Fit preprocessor on training data
+    # -----------------------------------
 
     X_train_processed = (
         preprocessor.fit_transform(X_train)
     )
-
-    print("\n=== PROCESSED SHAPE ===")
-    print(X_train_processed.shape)
 
     X_test_processed = (
         preprocessor.transform(X_test)
@@ -65,31 +54,49 @@ def train_model(
         preprocessor.get_feature_names_out()
     )
 
-    print("\n=== FIRST 20 FEATURES ===")
+    # -----------------------------------
+    # Debug Information
+    # -----------------------------------
 
-    for name in feature_names[:20]:
-        print(name)
+    if DEBUG:
 
-    print(
-        f"\nTotal processed features: "
-        f"{len(feature_names)}"
-    )
+        print("\n=== RAW FEATURES ===")
+        print(
+            f"Number of raw features: "
+            f"{len(X_train.columns)}"
+        )
 
-    # -----------------------------
-    # Train Model
-    # -----------------------------
+        for col in X_train.columns:
+            print(col)
+
+        print("\n=== PROCESSED SHAPE ===")
+        print(X_train_processed.shape)
+
+        print("\n=== FIRST 20 FEATURES ===")
+
+        for name in feature_names[:20]:
+            print(name)
+
+        print(
+            f"\nTotal processed features: "
+            f"{len(feature_names)}"
+        )
+
+    # -----------------------------------
+    # Train model
+    # -----------------------------------
 
     estimator.fit(
         X_train_processed,
         y_train,
     )
 
-    # -----------------------------
-    # Predict on test set
-    # -----------------------------
+    # -----------------------------------
+    # Predict
+    # -----------------------------------
 
     y_pred = estimator.predict(
-        X_test_processed
+        X_test_processed,
     )
 
     return (

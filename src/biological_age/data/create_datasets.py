@@ -3,6 +3,11 @@ from pathlib import Path
 import pandas as pd
 
 
+from biological_age.features.build_features import (
+    build_features,
+)
+
+
 CRP_COLUMNS = [
     "HSCRP",
     "LBXHSCRP",
@@ -111,8 +116,7 @@ def create_dataset(df: pd.DataFrame) -> pd.DataFrame:
     Main dataset creation pipeline.
     """
 
-    print("\n[INFO] Creating processed dataset...")
-    print(f"[INFO] Original shape: {df.shape}")
+    print(f"[INFO] Input dataset shape: {df.shape}")
 
     # -----------------------------------
     # Remove rows with missing target
@@ -146,6 +150,16 @@ def create_dataset(df: pd.DataFrame) -> pd.DataFrame:
     # -----------------------------------
 
     df = remove_duplicates(df)
+
+    # -----------------------------------
+    # Feature Engineering
+    # -----------------------------------
+
+    print(
+        "\n[INFO] Building engineered features..."
+    )
+
+    df = build_features(df)
 
     # -----------------------------------
     # Reset index
