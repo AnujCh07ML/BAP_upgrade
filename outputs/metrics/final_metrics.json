@@ -1,0 +1,10 @@
+{
+    "model": "XGBoost Feature Engineered",
+    "artifact": "models/final/xgb_pipeline_final.pkl",
+    "version": "v1.0.0",
+    "feature_set": "feature_engineered_v1",
+    "features": 31,
+    "mae": 7.562688861703338,
+    "rmse": 10.668864336358236,
+    "r2": 0.8012450573180926
+}

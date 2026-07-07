@@ -1,29 +1,55 @@
 # 🧬 Biological Age Prediction using NHANES Biomarkers
 
-> An end-to-end machine learning project for predicting chronological age from clinical laboratory biomarkers using the National Health and Nutrition Examination Survey (NHANES).
+> **An end-to-end machine learning project for predicting chronological age from clinical laboratory biomarkers using the National Health and Nutrition Examination Survey (NHANES).**
 
-This project demonstrates a production-style machine learning workflow, including:
+This project demonstrates a production-style machine learning workflow, covering:
 
-- Data engineering
-- Feature engineering
+- Data engineering and preprocessing
+- Biologically inspired feature engineering
 - Hyperparameter optimization
 - Explainable AI (SHAP)
 - Modular project architecture
 - Model versioning
+- Automated testing (Pytest)
+- CI/CD with GitHub Actions
+- Dockerized environment
 
 ---
 
-# Project Overview
+# ⭐ Project Highlights
 
-Aging is accompanied by measurable physiological changes across multiple biological systems.
+- **36,992** NHANES participants (2011–2020)
+- **27 original predictor features**
+- **30 predictor features after feature engineering**
+- **Best Model:** Feature Engineered XGBoost
+- **MAE:** **7.56 years**
+- **RMSE:** **10.67 years**
+- **R²:** **0.801**
+- SHAP-based global and local model interpretation
+- Production-style modular ML architecture
+
+---
+
+# 📖 Project Overview
+
+Aging is associated with measurable physiological changes across multiple biological systems.
 
 This project investigates whether routinely collected blood biomarkers can accurately predict chronological age and provide a foundation for future biological age estimation.
 
-Unlike a notebook-only implementation, this project is organized as a reusable machine learning pipeline with separate modules for data processing, preprocessing, feature engineering, model training, evaluation, and explainability.
+Unlike notebook-only implementations, this project is structured as a reusable machine learning system with dedicated modules for:
+
+- Data ingestion
+- Data preprocessing
+- Feature engineering
+- Model training
+- Hyperparameter tuning
+- Model evaluation
+- Model interpretation
+- Artifact management
 
 ---
 
-# Dataset
+# 📊 Dataset
 
 ### Source
 
@@ -33,18 +59,18 @@ National Health and Nutrition Examination Survey (NHANES)
 
 2011–2020
 
-### Final Dataset
+### Dataset Summary
 
-| Metric              |             Value |
-| ------------------- | ----------------: |
-| Participants        |            36,992 |
-| Original Features   |                27 |
-| Engineered Features |                31 |
-| Target              | Chronological Age |
+| Metric                        |             Value |
+| ----------------------------- | ----------------: |
+| Participants                  |            36,992 |
+| Original Predictor Features   |                27 |
+| Engineered Predictor Features |                30 |
+| Target                        | Chronological Age |
 
 ---
 
-# Machine Learning Pipeline
+# ⚙️ Machine Learning Pipeline
 
 ```text
 Raw NHANES Data
@@ -74,36 +100,39 @@ Hyperparameter Tuning
 Model Evaluation
         │
         ▼
-SHAP Interpretation
+SHAP Explainability
+        │
+        ▼
+Versioned Model Artifacts
 ```
 
 ---
 
-# Feature Engineering
+# 🧬 Feature Engineering
 
-Three biologically motivated biomarkers were engineered:
+Three biologically motivated biomarkers were engineered using established clinical knowledge.
 
-| Engineered Feature       | Formula                          |
-| ------------------------ | -------------------------------- |
-| BUN / Creatinine Ratio   | Blood Urea Nitrogen ÷ Creatinine |
-| Cholesterol / HDL Ratio  | Total Cholesterol ÷ HDL          |
-| Triglyceride / HDL Ratio | Triglycerides ÷ HDL              |
+| Engineered Feature       | Formula                 |
+| ------------------------ | ----------------------- |
+| Albumin / Globulin Ratio | Albumin ÷ Globulin      |
+| Cholesterol / HDL Ratio  | Total Cholesterol ÷ HDL |
+| Triglyceride / HDL Ratio | Triglycerides ÷ HDL     |
 
-These clinically meaningful ratio features improved predictive performance compared to the tuned baseline model.
+These engineered biomarkers improved predictive performance over the tuned baseline model.
 
 ---
 
-# Models Evaluated
+# 🤖 Models Evaluated
 
 - Random Forest Regressor
 - XGBoost Regressor
 - LightGBM Regressor
 
-Hyperparameter optimization was performed using **RandomizedSearchCV**.
+Hyperparameter optimization was performed using **RandomizedSearchCV** with cross-validation.
 
 ---
 
-# Model Performance
+# 🏆 Model Performance
 
 | Model                              |      MAE |      RMSE |        R² |
 | ---------------------------------- | -------: | --------: | --------: |
@@ -114,21 +143,40 @@ Hyperparameter optimization was performed using **RandomizedSearchCV**.
 
 ---
 
-# Feature Engineering Impact
+# 📈 Feature Engineering Impact
 
-| Metric | Before |     After |
-| ------ | -----: | --------: |
-| MAE    |   7.71 |  **7.56** |
-| RMSE   |  10.75 | **10.67** |
-| R²     |  0.798 | **0.801** |
+| Metric | Tuned Baseline | Feature Engineered |
+| ------ | -------------: | -----------------: |
+| MAE    |           7.71 |           **7.56** |
+| RMSE   |          10.75 |          **10.67** |
+| R²     |          0.798 |          **0.801** |
 
-Feature engineering consistently improved model performance across all evaluation metrics.
+The addition of biologically meaningful ratio features produced consistent improvements across all evaluation metrics.
 
 ---
 
-# SHAP Explainability
+# 🏅 Final Production Model
 
-Global and local model interpretation was performed using SHAP.
+The **Feature Engineered XGBoost (V2)** model was selected as the production model based on:
+
+- Lowest MAE
+- Lowest RMSE
+- Highest R²
+- Consistent SHAP interpretation
+- Modular preprocessing pipeline
+- Versioned model artifacts
+
+Production artifact:
+
+```text
+models/final/xgb_pipeline_final.pkl
+```
+
+---
+
+# 🔍 Model Explainability (SHAP)
+
+Global and local explanations were generated using SHAP.
 
 ## Global Feature Importance
 
@@ -154,19 +202,19 @@ Global and local model interpretation was performed using SHAP.
 
 ---
 
-# Key SHAP Findings
+# 🧠 Key Findings
 
-The SHAP analysis identified several important biological patterns:
+SHAP analysis identified several biologically meaningful patterns:
 
-- HbA1c was the strongest predictor of age.
-- Mean Corpuscular Volume showed a pronounced nonlinear relationship with aging.
-- Total Cholesterol and Blood Urea Nitrogen were among the most influential biomarkers.
-- Phosphorus demonstrated an inverse relationship with predicted age.
-- Tree-based boosting successfully captured complex nonlinear interactions that traditional linear models would likely miss.
+- HbA1c was the strongest predictor of chronological age.
+- Mean Corpuscular Volume demonstrated a pronounced nonlinear relationship with aging.
+- Blood Urea Nitrogen and Total Cholesterol were consistently influential biomarkers.
+- Phosphorus exhibited an inverse relationship with predicted age.
+- The engineered ratio features improved predictive performance while complementing the original biomarkers rather than replacing them.
 
 ---
 
-# Repository Structure
+# 📁 Repository Structure
 
 ```text
 biological-age-prediction/
@@ -191,16 +239,18 @@ biological-age-prediction/
 │
 ├── src/
 │   └── biological_age/
+│       ├── api/
 │       ├── data/
-│       ├── features/
-│       ├── preprocessing/
-│       ├── models/
 │       ├── evaluation/
+│       ├── features/
 │       ├── interpret/
+│       ├── models/
+│       ├── preprocessing/
 │       ├── split/
 │       └── utils/
 │
 ├── tests/
+├── .github/
 ├── Dockerfile
 ├── config.yaml
 ├── main.py
@@ -209,9 +259,9 @@ biological-age-prediction/
 
 ---
 
-# Technologies
+# 🛠️ Technology Stack
 
-### Data
+### Data Processing
 
 - Pandas
 - NumPy
@@ -226,21 +276,23 @@ biological-age-prediction/
 
 - SHAP
 
-### Engineering
+### Software Engineering
 
 - Pytest
-- Docker
 - Git
 - GitHub Actions
+- Docker
 
 ---
 
-# Reproducibility
+# 🚀 Getting Started
 
 Clone the repository
 
 ```bash
 git clone https://github.com/AnujCh07ML/biological-age-prediction.git
+
+cd biological-age-prediction
 ```
 
 Create a virtual environment
@@ -249,25 +301,21 @@ Create a virtual environment
 python -m venv .venv
 ```
 
-Activate
+Activate it
 
 ```bash
 source .venv/bin/activate
 ```
 
-Install
+Install dependencies
 
 ```bash
 pip install -r requirements.txt
-```
 
-Install package
-
-```bash
 pip install -e .
 ```
 
-Run pipeline
+Run the training pipeline
 
 ```bash
 python main.py
@@ -275,42 +323,44 @@ python main.py
 
 ---
 
-# Current Project Status
+# 📌 Current Status
 
-## Completed
+## ✅ Completed
 
-- NHANES data ingestion
-- Multi-cycle data harmonization
-- Feature preprocessing
-- Baseline model development
-- Hyperparameter optimization
+- NHANES multi-cycle data ingestion
+- Data harmonization
+- Modular preprocessing pipeline
+- Feature engineering
+- Random Forest benchmark
+- XGBoost hyperparameter optimization
+- LightGBM hyperparameter optimization
 - SHAP explainability
-- Biological feature engineering
-- Versioned model artifacts
+- Final production model selection
+- Model versioning
+- Automated testing
+- Docker environment
+- GitHub Actions CI pipeline
 
----
+## 🚧 Planned
 
-# Next Steps
-
-- FastAPI model serving
-- Docker deployment
-- GitHub Actions CI/CD
+- FastAPI inference service
+- Cloud deployment
 - Model monitoring
+- External validation dataset
 - Biological age proxy development
-- External dataset validation
 
 ---
 
-# Author
+# 👤 Author
 
 **Anuj Chauhan**
 
-Machine Learning | Bioinformatics | Explainable AI
+Machine Learning • Bioinformatics • Explainable AI
 
-Interested in machine learning applications for aging research, computational biology, and biomedical data science.
+Interested in applying machine learning to computational biology, aging research, and biomedical data science.
 
 ---
 
-# License
+# 📄 License
 
-MIT License
+This project is licensed under the **MIT License**.
