@@ -41,6 +41,7 @@ data/processed/*
 # Models
 # ======================================================
 models/*
+
 *.joblib
 *.pkl
 *.pickle
@@ -48,6 +49,10 @@ models/*
 *.onnx
 *.pt
 *.pth
+
+# Track production model
+!models/final/
+!models/final/xgb_pipeline_final.pkl
 
 # ======================================================
 # Outputs
