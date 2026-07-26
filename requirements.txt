@@ -9,3 +9,5 @@ notebook
 pyyaml
 pytest
 shap
+fastapi
+uvicorn
