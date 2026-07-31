@@ -28,7 +28,6 @@ RUN pip install --upgrade pip \
 COPY api ./api
 COPY src ./src
 COPY models/final ./models/final
-
 COPY config.yaml .
 COPY setup.py .
 
@@ -40,4 +39,4 @@ EXPOSE 8000
 # ==========================================
 # Start FastAPI
 # ==========================================
-CMD ["uvicorn", "api.app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "uvicorn api.app:app --host 0.0.0.0 --port ${PORT:-8000}"]
